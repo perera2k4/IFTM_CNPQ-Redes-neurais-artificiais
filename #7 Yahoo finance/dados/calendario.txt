@@ -1,0 +1,51 @@
+2021-06-29
+2021-06-29
+# Calendários
+        self.calendarioInicio = QCalendarWidget(self)
+        self.calendarioInicio.selectionChanged.connect(self.onChangedDataInicio)
+        self.calendarioInicio.setStyleSheet("""
+        QCalendarWidget QWidget { 
+            alternate-background-color: rgb(128, 128, 128);
+        }
+        
+        /* normal days */
+        QCalendarWidget QAbstractItemView:enabled 
+        {
+            color: white;  
+            background-color: #26282C;  
+            selection-background-color: rgb(128, 128, 128); 
+            selection-color: rgb(0, 255, 0); 
+            font-size: 18px;
+        }
+        
+        /* days in other months */
+        QCalendarWidget QAbstractItemView:disabled { 
+            color: rgb(128, 128, 128); 
+        }""")
+        self.escolhaCalendarioInicio = self.calendarioInicio.selectedDate().toString('yyyy-MM-dd')
+        self.calendarioInicioTexto = QLabel(f'Data Início (Ano/Mês/Dia): {self.escolhaCalendarioInicio}')
+
+        self.calendarioFim = QCalendarWidget(self)
+        self.calendarioFim.selectionChanged.connect(self.onChangedDataFim)
+        self.calendarioFim.setStyleSheet("""
+        QCalendarWidget QWidget { 
+            alternate-background-color: rgb(128, 128, 128);
+        }
+        
+        /* normal days */
+        QCalendarWidget QAbstractItemView:enabled 
+        {
+            color: white;  
+            background-color: #26282C;  
+            selection-background-color: rgb(128, 128, 128); 
+            selection-color: rgb(0, 255, 0); 
+            font-size: 18px;
+        }
+        /* days in other months */
+        QCalendarWidget QAbstractItemView:disabled { 
+            color: rgb(128, 128, 128); 
+        }""")
+        self.escolhaCalendarioFim = self.calendarioFim.selectedDate().toString('yyyy-MM-dd')
+        self.calendarioFimTexto  = QLabel(f'Data Fim (Ano/Mês/Dia): {self.escolhaCalendarioFim}')
+
+        

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Interativo: Aplicações de Redes Neurais</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: A single-page dashboard structure with a sticky navigation bar linking to thematic sections (Intro, Classification, Time Series, Parameters). The classification section uses tabs to manage the three related projects (Iris, Wine, Breast Cancer), preventing a long scroll and facilitating direct comparison. This structure groups content logically for better usability, moving from a text-based report to a task-oriented interactive experience. -->
+    <!-- Visualization & Content Choices: Report Info -> Goal -> Viz/Presentation -> Interaction -> Justification. 1. Project Parameters (table) -> Compare -> Interactive Cards -> Select dropdown to highlight -> Easier comparison than static table -> HTML/JS. 2. Project Accuracy (number) -> Compare -> Bar Chart -> Hover for details -> Visual impact for a key metric -> Chart.js. 3. NN Architecture (text) -> Inform -> HTML/CSS Diagram -> Static view -> Clear visual flow of layers -> HTML/Tailwind. 4. Time Series Data (concept) -> Show Change -> Line Chart with mock data -> Hover for tooltips -> Best visualization for time-based trends -> Chart.js. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f5; /* Zinc 100 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover {
+            color: #14b8a6; /* Teal 500 */
+        }
+        .tab-button.active {
+            border-color: #14b8a6; /* Teal 500 */
+            color: #14b8a6; /* Teal 500 */
+            background-color: #f0fdfa; /* Teal 50 */
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .stat-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-teal-600">Projetos de RNA</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#inicio" class="nav-link text-gray-600">Início</a>
+                <a href="#classificacao" class="nav-link text-gray-600">Projetos de Classificação</a>
+                <a href="#previsao" class="nav-link text-gray-600">Previsão de Séries Temporais</a>
+                <a href="#parametros" class="nav-link text-gray-600">Parâmetros</a>
+            </div>
+            <div class="md:hidden">
+                <select onchange="window.location.href=this.value" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-2.5">
+                    <option value="#inicio">Menu</option>
+                    <option value="#inicio">Início</option>
+                    <option value="#classificacao">Classificação</option>
+                    <option value="#previsao">Previsão</option>
+                    <option value="#parametros">Parâmetros</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-12">
+
+        <!-- Seção Início -->
+        <section id="inicio" class="text-center mb-16 md:mb-24">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Redes Neurais Artificiais e Suas Aplicações Práticas</h2>
+            <p class="max-w-3xl mx-auto text-gray-600 mb-6">
+                Esta página apresenta um resumo interativo de um estudo prático sobre Redes Neurais Artificiais (RNAs), voltado para estudantes do ensino médio. O objetivo é demonstrar de forma acessível como construir, treinar e avaliar RNAs, transformando os dados de um relatório técnico em uma experiência visual e explorável.
+            </p>
+            <div class="flex justify-center items-center space-x-4 text-sm text-gray-500">
+                <span>por Bruno Pereira Carvalho</span>
+                <span class="text-gray-300">|</span>
+                <span>IFTM - Campus Ituiutaba, 2020</span>
+            </div>
+        </section>
+
+        <!-- Seção Projetos de Classificação -->
+        <section id="classificacao" class="mb-16 md:mb-24">
+            <h2 class="text-3xl font-bold text-center mb-4">Projetos de Classificação</h2>
+            <p class="max-w-3xl mx-auto text-center text-gray-600 mb-12">
+                Nesta seção, exploramos três problemas clássicos de classificação resolvidos com Redes Neurais. Cada aba revela um dataset diferente, seus objetivos, a arquitetura da rede utilizada e a performance esperada. A interação permite comparar facilmente as abordagens e resultados.
+            </p>
+
+            <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+                <!-- Tabs -->
+                <div class="mb-6 border-b border-gray-200">
+                    <nav class="flex flex-wrap -mb-px" id="class-tabs">
+                        <button data-target="iris" class="tab-button active text-gray-600 py-4 px-6 block hover:text-teal-600 focus:outline-none border-b-2 font-medium">
+                            🌸 Dataset Iris
+                        </button>
+                        <button data-target="wine" class="tab-button text-gray-600 py-4 px-6 block hover:text-teal-600 focus:outline-none border-b-2 font-medium">
+                            🍷 Dataset Wine
+                        </button>
+                        <button data-target="cancer" class="tab-button text-gray-600 py-4 px-6 block hover:text-teal-600 focus:outline-none border-b-2 font-medium">
+                            ⚕️ Dataset Breast Cancer
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Tab Content -->
+                <div id="tab-content">
+                    <!-- Iris Content -->
+                    <div id="iris" class="tab-pane active">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2">Classificação de Flores Iris</h3>
+                                <p class="text-gray-600 mb-6">O objetivo é prever a espécie de flores (Setosa, Versicolor, Virginica) a partir de quatro atributos morfológicos. Este é um problema fundamental para testar algoritmos de classificação.</p>
+                                <div class="grid grid-cols-2 gap-4 text-center">
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <div class="text-2xl font-bold text-teal-600">4</div>
+                                        <div class="text-sm text-gray-500">Atributos</div>
+                                    </div>
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <div class="text-2xl font-bold text-teal-600">>95%</div>
+                                        <div class="text-sm text-gray-500">Acurácia Esperada</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chart-container h-64 max-h-64">
+                                <canvas id="irisChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Wine Content -->
+                    <div id="wine" class="tab-pane hidden">
+                       <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2">Classificação de Vinhos</h3>
+                                <p class="text-gray-600 mb-6">Utilizando 13 atributos físico-químicos, o modelo classifica vinhos em três classes distintas. Um desafio mais complexo que o dataset Iris, exigindo uma rede mais robusta.</p>
+                                <div class="grid grid-cols-2 gap-4 text-center">
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <div class="text-2xl font-bold text-teal-600">13</div>
+                                        <div class="text-sm text-gray-500">Atributos</div>
+                                    </div>
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <div class="text-2xl font-bold text-teal-600">>90%</div>
+                                        <div class="text-sm text-gray-500">Acurácia Esperada</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chart-container h-64 max-h-64">
+                                <canvas id="wineChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Breast Cancer Content -->
+                    <div id="cancer" class="tab-pane hidden">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2">Diagnóstico de Câncer de Mama</h3>
+                                <p class="text-gray-600 mb-6">Este modelo realiza uma classificação binária (maligno/benigno) de tumores a partir de 30 atributos clínicos, demonstrando uma aplicação de alto impacto da IA na área da saúde.</p>
+                               <div class="grid grid-cols-2 gap-4 text-center">
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <div class="text-2xl font-bold text-teal-600">30</div>
+                                        <div class="text-sm text-gray-500">Atributos</div>
+                                    </div>
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <div class="text-2xl font-bold text-teal-600">>95%</div>
+                                        <div class="text-sm text-gray-500">Acurácia Esperada</div>
+                                    </div>
+                                </div>
+                            </div>
+                           <div class="chart-container h-64 max-h-64">
+                                <canvas id="cancerChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Seção Previsão de Séries Temporais -->
+        <section id="previsao" class="mb-16 md:mb-24">
+            <h2 class="text-3xl font-bold text-center mb-4">Previsão de Séries Temporais</h2>
+            <p class="max-w-3xl mx-auto text-center text-gray-600 mb-12">
+                Aqui, a rede neural é aplicada a um problema de previsão: estimar o preço futuro de ações da BOVESPA. O gráfico interativo simula a comparação entre os valores reais e os previstos pelo modelo, usando uma janela deslizante de 50 dias de histórico para prever o próximo.
+            </p>
+            <div class="stat-card">
+                 <h3 class="text-2xl font-bold mb-2 text-center">Previsão de Preços de Ações (Simulação)</h3>
+                 <p class="text-center text-gray-500 text-sm mb-4">Passe o mouse sobre o gráfico para ver os detalhes.</p>
+                <div class="chart-container h-80 max-h-80">
+                    <canvas id="timeSeriesChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Parâmetros -->
+        <section id="parametros">
+            <h2 class="text-3xl font-bold text-center mb-4">Parâmetros de Treinamento</h2>
+             <p class="max-w-3xl mx-auto text-center text-gray-600 mb-12">
+                O sucesso de uma rede neural depende fortemente do ajuste de seus hiperparâmetros. Esta seção resume os principais parâmetros utilizados em cada um dos quatro experimentos. Explore os cartões para comparar as diferentes configurações de épocas, taxa de aprendizado e arquitetura da rede.
+            </p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="stat-card text-center">
+                    <h3 class="font-bold text-xl mb-3">🌸 Íris</h3>
+                    <p class="text-sm text-gray-500 mb-1"><span class="font-semibold">Épocas:</span> 10.000</p>
+                    <p class="text-sm text-gray-500 mb-1"><span class="font-semibold">Taxa de Aprendizado:</span> 0.9</p>
+                    <p class="text-sm text-gray-500 mb-1"><span class="font-semibold">Momentum:</span> N/A</p>
+                    <p class="text-sm text-gray-500 mb-4"><span class="font-semibold">Camada Oculta:</span> 5 Neurônios</p>
+                    <div class="bg-teal-50 text-teal-700 rounded-full px-3 py-1 text-xs font-semibold">Otimizador: SGD</div>
+                </div>
+                 <div class="stat-card text-center">
+                    <h3 class="font-bold text-xl mb-3">🍷 Wine</h3>
+                    <p class="text-sm text-gray-500 mb-1"><span class="font-semibold">Épocas:</span> 100.000</p>
+                    <p class="text-sm text-gray-500 mb-1"><span class="font-semibold">Taxa de Aprendizado:</span> 0.9</p>
+                    <p class="text-sm text-gray-500 mb-1"><span class="font-semibold">Momentum:</span> 0.3</p>
+                    <p class="text-sm text-gray-500 mb-4"><span class="font-semibold">Camada Oculta:</span> 13 Neurônios</p>
+                    <div class="bg-teal-50 text-teal-700 rounded-full px-3 py-1 text-xs font-semibold">Otimizador: SGD</div>
+                </div>
+                 <div class="stat-card text-center">
+                    <h3 class="font-bold text-xl mb-3">⚕️ Breast Cancer</h3>
+                    <p class="text-sm text-gray-500 mb-1"><span class="font-semibold">Épocas:</span> 100.000</p>
+                    <p class="text-sm text-gray-500 mb-1"><span class="font-semibold">Taxa de Aprendizado:</span> 0.9</p>
+                    <p class="text-sm text-gray-500 mb-1"><span class="font-semibold">Momentum:</span> 0.3</p>
+                    <p class="text-sm text-gray-500 mb-4"><span class="font-semibold">Camada Oculta:</span> 30 Neurônios</p>
+                    <div class="bg-teal-50 text-teal-700 rounded-full px-3 py-1 text-xs font-semibold">Otimizador: SGD</div>
+                </div>
+                 <div class="stat-card text-center">
+                    <h3 class="font-bold text-xl mb-3">📈 Séries Temporais</h3>
+                    <p class="text-sm text-gray-500 mb-1"><span class="font-semibold">Épocas:</span> 100.001</p>
+                    <p class="text-sm text-gray-500 mb-1"><span class="font-semibold">Taxa de Aprendizado:</span> 0.09</p>
+                    <p class="text-sm text-gray-500 mb-1"><span class="font-semibold">Momentum:</span> 0.03</p>
+                    <p class="text-sm text-gray-500 mb-4"><span class="font-semibold">Camada Oculta:</span> 100 Neurônios</p>
+                    <div class="bg-teal-50 text-teal-700 rounded-full px-3 py-1 text-xs font-semibold">Otimizador: SGD</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white mt-16 md:mt-24">
+        <div class="container mx-auto px-6 py-4 text-center text-gray-500 text-sm">
+            <p>&copy; 2024 - Painel Interativo criado a partir do estudo de Bruno Pereira Carvalho.</p>
+             <p>Orientador: Prof. Dr. André Luiz França Batista (IFTM - Campus Ituiutaba)</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: '#1f2937',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        callbacks: {
+                           label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                           stepSize: 20,
+                           callback: function(value) {
+                               return value + '%'
+                           }
+                        }
+                    }
+                }
+            };
+            
+            function createAccuracyChart(canvasId, label, accuracy) {
+                const ctx = document.getElementById(canvasId).getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Acurácia'],
+                        datasets: [{
+                            label: label,
+                            data: [accuracy],
+                            backgroundColor: ['#14b8a6'],
+                            borderColor: ['#0d9488'],
+                            borderWidth: 1,
+                            barPercentage: 0.4
+                        }]
+                    },
+                    options: chartOptions
+                });
+            }
+
+            createAccuracyChart('irisChart', 'Acurácia Esperada', 95);
+            createAccuracyChart('wineChart', 'Acurácia Esperada', 90);
+            createAccuracyChart('cancerChart', 'Acurácia Esperada', 95);
+
+            // Time Series Chart
+            const tsCtx = document.getElementById('timeSeriesChart').getContext('2d');
+            const labels = Array.from({length: 30}, (_, i) => `Dia ${i + 1}`);
+            const realData = [100, 102, 105, 103, 108, 110, 112, 115, 113, 118, 120, 122, 125, 123, 128, 130, 129, 135, 138, 140, 137, 142, 145, 148, 150, 147, 152, 155, 153, 158];
+            const predictedData = realData.map((val, i) => {
+                const noise = (Math.random() - 0.5) * 8;
+                const trend = i > 15 ? 1.02 : 0.98;
+                return Math.max(90, val * trend + noise);
+            });
+
+            new Chart(tsCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Valor Real',
+                            data: realData,
+                            borderColor: '#14b8a6',
+                            backgroundColor: 'transparent',
+                            tension: 0.3,
+                            pointRadius: 2,
+                            pointBackgroundColor: '#14b8a6'
+                        },
+                        {
+                            label: 'Valor Previsto',
+                            data: predictedData,
+                            borderColor: '#f97316',
+                            backgroundColor: 'transparent',
+                            borderDash: [5, 5],
+                            tension: 0.3,
+                            pointRadius: 2,
+                            pointBackgroundColor: '#f97316'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                             mode: 'index',
+                             intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+
+            // Tab functionality
+            const tabs = document.querySelectorAll('.tab-button');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetId = tab.dataset.target;
+                    
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    tabPanes.forEach(pane => {
+                        if (pane.id === targetId) {
+                            pane.classList.remove('hidden');
+                            pane.classList.add('active');
+                        } else {
+                            pane.classList.add('hidden');
+                            pane.classList.remove('active');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

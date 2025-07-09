@@ -13,6 +13,9 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Status](https://img.shields.io/badge/status-Ativo-brightgreen.svg)
 
+Preview do site:
+[![Preview do site](./assets/preview.png)](https://perera2k4.github.io/IFTM_CNPQ-Redes-neurais-artificiais/)
+
 **Autor:** Bruno Pereira Carvalho  
 **Orientador:** Prof. Dr. André Luiz França Batista  
 **Instituição:** Instituto Federal de Educação, Ciência e Tecnologia do Triângulo Mineiro - Campus Ituiutaba  

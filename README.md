@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./if-logo.png" alt="Logo da Instituição" width="450"/>
+  <img src="./assets/if-logo.png" alt="Logo da Instituição" width="450"/>
   <h3>Instituto Federal de Educação, Ciência e Tecnologia do Triângulo Mineiro - Campus Ituiutaba</h3>
 </div>
 

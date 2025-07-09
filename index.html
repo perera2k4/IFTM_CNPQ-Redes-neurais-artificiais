@@ -62,10 +62,7 @@
   <body class="text-gray-800">
     <!-- Header & Navigation -->
     <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
-      <nav
-        class="container mx-auto px-6 py-4 flex justify-between items-center"
-      >
-        <!-- <h1 class="text-xl md:text-2xl font-bold text-teal-600">Projetos de RNA</h1> -->
+      <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
         <img
           src="./assets/if-logo-black.png"
           alt="Logo if"
@@ -81,19 +78,22 @@
           >
           <a href="#parametros" class="nav-link text-gray-600">Parâmetros</a>
         </div>
+        <!-- Novo menu mobile estilizado -->
         <div class="lg:hidden">
-          <select
-            onchange="window.location.href=this.value"
-            class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-2.5"
-          >
-            <option value="#inicio">Menu</option>
-            <option value="#inicio">Início</option>
-            <option value="#classificacao">Classificação</option>
-            <option value="#previsao">Previsão</option>
-            <option value="#parametros">Parâmetros</option>
-          </select>
+          <button id="mobile-menu-button" class="p-2 rounded-md text-gray-600 hover:text-green-600 hover:bg-gray-100">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+          </button>
         </div>
       </nav>
+      <div id="mobile-menu" class="hidden lg:hidden py-4 px-6 bg-white shadow-md border-t border-gray-100">
+        <a href="#inicio" class="block py-2 px-4 text-sm text-gray-600 hover:bg-green-50 rounded">Início</a>
+        <a href="#classificacao" class="block py-2 px-4 text-sm text-gray-600 hover:bg-green-50 rounded">Projetos de Classificação</a>
+        <a href="#previsao" class="block py-2 px-4 text-sm text-gray-600 hover:bg-green-50 rounded">Previsão de Séries Temporais</a>
+        <a href="#parametros" class="block py-2 px-4 text-sm text-gray-600 hover:bg-green-50 rounded">Parâmetros</a>
+        <a href="#equipe" class="block py-2 px-4 text-sm text-gray-600 hover:bg-green-50 rounded">Equipe</a>
+      </div>
     </header>
 
     <main class="container mx-auto px-6 py-8 md:py-12">
@@ -404,14 +404,14 @@
           <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="stat-card text-center">
               <img
-                class="mx-auto h-24 w-24 rounded-full bg-purple-200 flex items-center justify-center text-3xl font-bold text-purple-700"
+                class="mx-auto h-24 w-24 rounded-full bg-green-200 flex items-center justify-center text-3xl font-bold text-green-700"
                 src="./assets/authors/bruno.jpg"
                 alt="Bruno"
               />
               <h3 class="mt-6 text-xl font-bold text-slate-900">
-                Bruno Pereira
+                Bruno Pereira Carvalho
               </h3>
-              <p class="mt-1 text-purple-600 font-medium">
+              <p class="mt-1 text-green-600 font-medium">
                 Estudante e Desenvolvedor
               </p>
               <div class="flex flex-wrap justify-center gap-4 mt-4">
@@ -451,15 +451,15 @@
             </div>
             <div class="stat-card text-center">
               <img
-                class="mx-auto h-24 w-24 rounded-full bg-purple-200 flex items-center justify-center text-3xl font-bold text-purple-700"
+                class="mx-auto h-24 w-24 rounded-full bg-green-200 flex items-center justify-center text-3xl font-bold text-green-700"
                 src="./assets/authors/andre.png"
                 alt="Diogenes"
               />
               <h3 class="mt-6 text-xl font-bold text-slate-900">
                 André Luiz França Batista
               </h3>
-              <p class="mt-1 text-purple-600 font-medium">
-                Dr. Educação Cientifica e Tecnológica
+              <p class="mt-1 text-green-600 font-medium">
+                Dr. em Educação Cientifica e Tecnológica
               </p>
               <div class="flex flex-wrap justify-center gap-4 mt-4">
                 <a
@@ -522,7 +522,7 @@
                 <a
                   href="https://iftm.edu.br/editais/projetos-de-ensino-pesquisa-e-extensao/iniciacao-cientifica-e-tecnologica/2020/edital-n-05-2020-pibic-em-cnpq-e-pivic-iftm-ensino-medio-tecnico/"
                   target="_blank"
-                  class="text-teal-600 underline"
+                  class="text-cyan-600 underline"
                   >clique aqui para abrir em nova aba</a
                 >.
               </p>
@@ -542,33 +542,34 @@
                 <a
                   href="./assets/resultado.pdf"
                   target="_blank"
-                  class="text-teal-600 underline"
+                  class="text-cyan-600 underline"
+                  >clique aqui para abrir em nova aba</a
+                >.
+              </p>
+            </div>
+            <div>
+              <div class="flex justify-center mt-12">
+                <iframe
+                  src="./assets/certificado.pdf"
+                  width="100%"
+                  height="600px"
+                  class="rounded-lg shadow-lg border border-gray-200 max-w-4xl w-full"
+                  title="Relatório PDF"
+                ></iframe>
+              </div>
+              <p class="text-center text-gray-500 mt-2 text-sm">
+                Caso o PDF não carregue,
+                <a
+                  href="./assets/certificado.pdf"
+                  target="_blank"
+                  class="text-cyan-600 underline"
                   >clique aqui para abrir em nova aba</a
                 >.
               </p>
             </div>
           </div>
         </div>
-        <div>
-          <div class="flex justify-center mt-12">
-            <iframe
-              src="./assets/certificado.pdf"
-              width="100%"
-              height="600px"
-              class="rounded-lg shadow-lg border border-gray-200 max-w-4xl w-full"
-              title="Relatório PDF"
-            ></iframe>
-          </div>
-          <p class="text-center text-gray-500 mt-2 text-sm">
-            Caso o PDF não carregue,
-            <a
-              href="./assets/certificado.pdf"
-              target="_blank"
-              class="text-teal-600 underline"
-              >clique aqui para abrir em nova aba</a
-            >.
-          </p>
-        </div>
+        
       </section>
     </main>
 
@@ -586,6 +587,21 @@
     </footer>
 
     <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuButton && mobileMenu) {
+          mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+          });
+          mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+              mobileMenu.classList.add('hidden');
+            });
+          });
+        }
+      });
+
       document.addEventListener("DOMContentLoaded", () => {
         const chartOptions = {
           responsive: true,
